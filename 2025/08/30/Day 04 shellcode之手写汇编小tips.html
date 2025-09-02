@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="-en -zh-CN -zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Day 04 shellcode之手写汇编小tips | futurefe的碎碎念</title><meta name="author" content="futurefe"><meta name="copyright" content="futurefe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Shellcode 汇编小 Tips如果shellcraft不适用，我们往往需要手写汇编构造更简短的 shellcode。本文整理了一些小技巧，帮助你快速写出合适的 shellcode。  前置知识1.mmap 与可执行内存有些题目会先用 mmap 给我们一块可读可写可执行的内存，比如： 1secret &#x3D; (__int64)mmap((void *)0x111000, 0x1000uLL, 7,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Day 04 shellcode之手写汇编小tips">
+<meta property="og:url" content="https://futurefe414.github.io/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html">
+<meta property="og:site_name" content="futurefe的碎碎念">
+<meta property="og:description" content="Shellcode 汇编小 Tips如果shellcraft不适用，我们往往需要手写汇编构造更简短的 shellcode。本文整理了一些小技巧，帮助你快速写出合适的 shellcode。  前置知识1.mmap 与可执行内存有些题目会先用 mmap 给我们一块可读可写可执行的内存，比如： 1secret &#x3D; (__int64)mmap((void *)0x111000, 0x1000uLL, 7,">
+<meta property="og:locale">
+<meta property="og:image" content="https://img.cdn1.vip/i/68b256b7a2f16_1756518071.webp">
+<meta property="article:published_time" content="2025-08-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-30T02:35:14.489Z">
+<meta property="article:author" content="futurefe">
+<meta property="article:tag" content="ubuntu">
+<meta property="article:tag" content="pwntools">
+<meta property="article:tag" content="汇编">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.cdn1.vip/i/68b256b7a2f16_1756518071.webp"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Day 04 shellcode之手写汇编小tips",
+  "url": "https://futurefe414.github.io/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html",
+  "image": "https://img.cdn1.vip/i/68b256b7a2f16_1756518071.webp",
+  "datePublished": "2025-08-29T16:00:00.000Z",
+  "dateModified": "2025-08-30T02:35:14.489Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "futurefe",
+      "url": "https://futurefe414.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="https://youke1.picui.cn/s1/2025/08/26/68adcaf80a695.jpg"><link rel="canonical" href="https://futurefe414.github.io/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":80,"languages":{"author":"Author: futurefe","link":"Link: ","source":"Source: futurefe的碎碎念","info":"Copyright belongs to the author. For commercial use, please contact the author for authorization. For non-commercial use, please indicate the source."}},
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Day 04 shellcode之手写汇编小tips',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(https://i.loli.net/2019/09/09/5oDRkWVKctx2b6A.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://youke1.picui.cn/s1/2025/08/26/68adc8086b77a.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Friends</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://img.cdn1.vip/i/68b256ba85a6b_1756518074.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="https://youke1.picui.cn/s1/2025/08/26/68adc48ae78c0.png" alt="Logo"><span class="site-name">futurefe的碎碎念</span></a><a class="nav-page-title" href="/"><span class="site-name">Day 04 shellcode之手写汇编小tips</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Friends</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Day 04 shellcode之手写汇编小tips</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-08-29T16:00:00.000Z" title="Created 2025-08-30 00:00:00">2025-08-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-08-30T02:35:14.489Z" title="Updated 2025-08-30 10:35:14">2025-08-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pwn/">pwn</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Shellcode-汇编小-Tips"><a href="#Shellcode-汇编小-Tips" class="headerlink" title="Shellcode 汇编小 Tips"></a>Shellcode 汇编小 Tips</h1><p>如果shellcraft不适用，我们往往需要手写汇编构造更简短的 shellcode。本文整理了一些小技巧，帮助你快速写出合适的 shellcode。</p>
+<hr>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="1-mmap-与可执行内存"><a href="#1-mmap-与可执行内存" class="headerlink" title="1.mmap 与可执行内存"></a>1.mmap 与可执行内存</h3><p>有些题目会先用 <code>mmap</code> 给我们一块可读可写可执行的内存，比如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">secret = (__int64)mmap((<span class="type">void</span> *)<span class="number">0x111000</span>, <span class="number">0x1000u</span>LL, <span class="number">7</span>, <span class="number">34</span>, <span class="number">-1</span>, <span class="number">0LL</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一参数：映射地址（0 表示随机，&gt;0x10000 时映射到自己）</li>
+<li>第二参数：长度</li>
+<li>第三参数：保护权限（7 &#x3D; r + w + x&#x3D;1+2+4）</li>
+<li>第五参数：文件句柄（-1 表示匿名）</li>
+</ul>
+<p>我们就可以把 <strong>shellcode</strong> 写入到这片内存里并<strong>执行</strong>。</p>
+<hr>
+<h3 id="2-常见-syscall-编号"><a href="#2-常见-syscall-编号" class="headerlink" title="2. 常见 syscall 编号"></a>2. 常见 syscall 编号</h3><p>Linux x64 下，常用的系统调用号：</p>
+<ul>
+<li><code>read</code>  &#x3D; 0</li>
+<li><code>write</code> &#x3D; 1</li>
+<li><code>open</code>  &#x3D; 2</li>
+<li><code>execve</code> &#x3D; 59 (0x3b)</li>
+</ul>
+<p>执行系统调用的一般步骤：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov rax, &lt;syscall号&gt;   ; 系统调用号放在 rax</span><br><span class="line">mov rdi, &lt;参数1&gt;</span><br><span class="line">mov rsi, &lt;参数2&gt;</span><br><span class="line">mov rdx, &lt;参数3&gt;</span><br><span class="line">syscall</span><br></pre></td></tr></table></figure>
+
+<p>比如执行 <code>/bin/sh</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">execve(&quot;/bin/sh&quot;, 0, 0)</span><br></pre></td></tr></table></figure>
+
+<p>对应寄存器：</p>
+<ul>
+<li><code>rax = 59</code></li>
+<li><code>rdi = &quot;/bin/sh&quot;</code></li>
+<li><code>rsi = 0</code></li>
+<li><code>rdx = 0</code></li>
+</ul>
+<p><strong>对应汇编</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shellcode=&quot;mov rsi,0;mov rdx,0;mov rax,59;push 0x68732f6e69622f;pop rdi;syscall&quot;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="3-asm-函数"><a href="#3-asm-函数" class="headerlink" title="3. asm()函数"></a>3. asm()函数</h3><p>pwntools 提供了 <code>asm()</code> 快速把汇编翻译成字节码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shellcode=asm(shellcode)</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="小tips"><a href="#小tips" class="headerlink" title="小tips"></a>小tips</h2><h3 id="1-绕过字符串检测（strlen-等）—-push-0"><a href="#1-绕过字符串检测（strlen-等）—-push-0" class="headerlink" title="1. 绕过字符串检测（strlen 等）—&gt; push 0;"></a>1. 绕过字符串检测（strlen 等）—&gt; <strong>push 0;</strong></h3><p>有些题目会检测输入的字符串，如果包含 <code>\x00</code> 截断（如 <code>strlen</code>），可以利用<code>push 0</code> 在栈上手动压入空字符，避免直接输入 <code>\x00</code>（这个会导致你写入的目标汇编被截成其他无效汇编，执行不可知的操作）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push 0              ; 压入 \x00</span><br><span class="line">mov rsi, rsp</span><br></pre></td></tr></table></figure>
+
+<p>这样就能通过可打印字符串的检验了。</p>
+<hr>
+<h3 id="2-没有-bin-sh-—-写入-bin-sh到映射的内存中"><a href="#2-没有-bin-sh-—-写入-bin-sh到映射的内存中" class="headerlink" title="2.没有/bin/sh  —&gt;写入/bin/sh到映射的内存中"></a>2.没有<code>/bin/sh</code>  —&gt;写入<code>/bin/sh</code>到映射的内存中</h3><p><code>.ljust()</code>函数：用二参向右填充满一参字节，不会覆盖原有数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shellcode.ljust(<span class="number">0x50</span>,<span class="string">b&quot;\x00&quot;</span>)+<span class="string">b&quot;/bin/sh\x00&quot;</span> </span><br></pre></td></tr></table></figure>
+<p>此时<code>/bin/sh</code>的地址就是<code>0x111050</code>（假设映射地址是<code>0x111000</code>），<code>mov rdi, 0x111050</code>即可。</p>
+<hr>
+<h3 id="3-mov-消耗过大-—-push-pop"><a href="#3-mov-消耗过大-—-push-pop" class="headerlink" title="3.mov 消耗过大 —&gt; push + pop"></a>3.mov 消耗过大 —&gt; <strong>push + pop</strong></h3><p>如<code>mov rsi,0;</code>可以用<code>push 0; pop rsi;</code>代替，节省字节数。</p>
+<hr>
+<h3 id="4-翻译汇编的网站"><a href="#4-翻译汇编的网站" class="headerlink" title="4.翻译汇编的网站"></a>4.翻译汇编的网站</h3><p>可以使用 <a target="_blank" rel="noopener" href="https://defuse.ca/online-x86-assembler.htm">https://defuse.ca/online-x86-assembler.htm</a> 这个网站把汇编代码翻译成机器码。<br>师傅们可以使用这个工具来调试和优化自己的 shellcode。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><strong>mmap</strong> 常用于获取一片可执行内存，用来写 shellcode。</li>
+<li><strong>syscall 编号</strong> 可以记一下，尤其是 read&#x2F;write&#x2F;open&#x2F;execve。</li>
+<li>写字符串时注意 <code>\x00</code> 截断问题，必要时用 <code>push 0；</code> 手动补。</li>
+<li><code>mov</code> 指令有时过长，可以用 <code>push + pop</code> 代替。</li>
+</ul>
+<hr>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://futurefe414.github.io">futurefe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://futurefe414.github.io/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html">https://futurefe414.github.io/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ubuntu/">ubuntu</a><a class="post-meta__tags" href="/tags/pwntools/">pwntools</a><a class="post-meta__tags" href="/tags/%E6%B1%87%E7%BC%96/">汇编</a></div><div class="post-share"><div class="social-share" data-image="https://img.cdn1.vip/i/68b256b7a2f16_1756518071.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/08/31/Day%2005%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E.html" title="Day 05 格式化字符串漏洞"><img class="cover" src="https://img.cdn1.vip/i/68b3b8763bc1f_1756608630.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Day 05 格式化字符串漏洞</div></div><div class="info-2"><div class="info-item-1">格式化字符串漏洞1. 漏洞原理在 C 语言中，printf 这一类函数会根据传入的 格式化字符串（format string）解析参数，例如： 1printf(&quot;hello %s\n&quot;, name);  但如果程序员直接写成： 1printf(input);  而没有提供额外参数，用户输入就会直接被当成格式化字符串解析。这时攻击者可以通过特殊的格式符（如 %p、%s、%n）来读取或写入内存，从而造成严重漏洞。  2. 基本利用方式(1) %p —— 打印栈上的地址 %p 会从栈上依次取出参数并以指针形式打印，不会解引用。 在没有参数的情况下，printf 还是会从栈上取值，因此我们能通过连续输入多个 %p 来泄露栈上的内容。  示例： 12输入: %p  #打印二参的地址               输入: %7$p #打印第八个参数的地址   (2) %s —— 打印指定地址的字符串 %s 会把栈上的值当作 指针，然后尝试打印这个地址对应的字符串(解引用)。  示例： 1输入: %4$s #打印第五个参数解引用后的值  表示取栈上第 5 个参数的值作为地址，...</div></div></div></a><a class="pagination-related" href="/2025/08/29/Day%2003%20shellcode%E4%B9%8B%EF%BC%9A%E6%9D%BF%E5%AD%90%E5%81%9Apwn,%E6%98%93%E5%A6%82%E5%8F%8D%E6%8E%8C.html" title="Day 03 shellcode之：板子做pwn,易如反掌"><img class="cover" src="https://youke1.picui.cn/s1/2025/08/29/68b1170d11e63.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Day 03 shellcode之：板子做pwn,易如反掌</div></div><div class="info-2"><div class="info-item-1">shellcraft杂谈1. 什么时候考虑写 shellcode？在 pwn 题里，是否写 shellcode一般要看是否能满足以下条件： 能把可控字节放进一块可执行内存：如程序把输入放到栈&#x2F;堆且该段 可执行（NX 关闭）；或能把内存权限改为可执行（有mprotect, mmap函数）。 所以写入shellcode前要先检查一下，确保shellcode写入到可执行内存中。若以上条件不满足，更适合探索其他路线。  2.  shellcraft 的三个常用组件 shellcraft 是pwntools 里的一个模块（板子），会根据体系结构生成汇编片段。以下均以x64架构为例。 1context.arch = &#x27;amd64&#x27;  2.1 shellcraft.sh() 作用：构造执行 execve(&quot;/bin/sh&quot;, 0, 0) 的 shellcode。 适用：允许 59 号系统调用、无 seccomp 限制。 用法示例：  123shellcode = shellcraft.sh()          # execve(&quot;/...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/08/29/Day%2003%20shellcode%E4%B9%8B%EF%BC%9A%E6%9D%BF%E5%AD%90%E5%81%9Apwn,%E6%98%93%E5%A6%82%E5%8F%8D%E6%8E%8C.html" title="Day 03 shellcode之：板子做pwn,易如反掌"><img class="cover" src="https://youke1.picui.cn/s1/2025/08/29/68b1170d11e63.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-29</div><div class="info-item-2">Day 03 shellcode之：板子做pwn,易如反掌</div></div><div class="info-2"><div class="info-item-1">shellcraft杂谈1. 什么时候考虑写 shellcode？在 pwn 题里，是否写 shellcode一般要看是否能满足以下条件： 能把可控字节放进一块可执行内存：如程序把输入放到栈&#x2F;堆且该段 可执行（NX 关闭）；或能把内存权限改为可执行（有mprotect, mmap函数）。 所以写入shellcode前要先检查一下，确保shellcode写入到可执行内存中。若以上条件不满足，更适合探索其他路线。  2.  shellcraft 的三个常用组件 shellcraft 是pwntools 里的一个模块（板子），会根据体系结构生成汇编片段。以下均以x64架构为例。 1context.arch = &#x27;amd64&#x27;  2.1 shellcraft.sh() 作用：构造执行 execve(&quot;/bin/sh&quot;, 0, 0) 的 shellcode。 适用：允许 59 号系统调用、无 seccomp 限制。 用法示例：  123shellcode = shellcraft.sh()          # execve(&quot;/...</div></div></div></a><a class="pagination-related" href="/2025/08/27/Day%2001%20pwn%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE.html" title="Day 01 pwn环境配置"><img class="cover" src="https://youke1.picui.cn/s1/2025/08/27/68aedab332ef9.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-27</div><div class="info-item-2">Day 01 pwn环境配置</div></div><div class="info-2"><div class="info-item-1">Ubuntu 下 Pwn 环境配置Pwn 是 CTF（Capture The Flag）竞赛中的重要方向，主要涉及二进制漏洞利用，而一套完善的 Pwn 环境是开展 Pwn 学习和竞赛的基础。本教程将带领大家在 Ubuntu 系统中，通过一系列命令逐步完成 Pwn 环境的配置，涵盖基础依赖库、工具安装以及关键辅助工具部署，即使是新手也能轻松跟随操作。 一、环境配置前的准备在开始配置 Pwn 环境前，请确保你的 Ubuntu 系统处于正常联网状态，因为后续所有操作都需要通过网络下载相关软件包和工具。同时，建议以具有 sudo 权限的用户登录系统，避免因权限不足导致命令执行失败。打开 Ubuntu 的终端（可以通过快捷键Ctrl + Alt + T快速调出），接下来我们将分四个步骤执行命令完成配置。 二、分步执行命令配置环境步骤 1：安装基础依赖库与常用工具这一步是环境配置的基础，我们需要更新系统软件源并升级已安装的软件，同时安装编译工具、编程语言环境、文本编辑器、调试工具以及必要的库文件，这些工具和库文件将为后续 Pwn 工具的安装和使用提供支持。 在终端中粘贴以下命令并回车执行（命...</div></div></div></a><a class="pagination-related" href="/2025/08/28/Day%2002%20%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E5%8F%8A%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF.html" title="Day 02 程序保护机制即绕过思路"><img class="cover" src="https://youke1.picui.cn/s1/2025/08/28/68afbc53e640d.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-28</div><div class="info-item-2">Day 02 程序保护机制即绕过思路</div></div><div class="info-2"><div class="info-item-1">ELF 文件的常见保护机制及绕过思路在 Pwn题目中，ELF（Executable and Linkable Format）文件通常会开启多种保护机制，以抵御常见的漏洞利用手段。理解这些保护机制的原理、检测方法及绕过思路，是成功解题的核心前提。本文将系统梳理 PWN 题目中主流的 ELF 保护机制，并详细分析对应的绕过方案。 前置须知 system(&quot;sh&quot;)、system(&quot;/bin/sh&quot;)、execve(&quot;/bin/sh&quot;, 0, 0)等函数可以用来获取 shell 权限。得到shell权限之后就可以cat flag了。  检测方式123checksec pwn  # pwn为目标ELF文件# 如果报错可以使用checksec --file=pwn  输入以上代码会在终端里显示出ELF的保护机制。 主要保护机制及绕过思路一、NX（No-eXecute）保护：栈 &#x2F; 堆不可执行1. 保护原理NX（No-eXecute，不可执行）是最基础的 ELF 保护机制之一，其核心作用是标记栈、堆等数据区域为 “不可执行...</div></div></div></a><a class="pagination-related" href="/2025/08/31/Day%2005%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E.html" title="Day 05 格式化字符串漏洞"><img class="cover" src="https://img.cdn1.vip/i/68b3b8763bc1f_1756608630.webp" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-31</div><div class="info-item-2">Day 05 格式化字符串漏洞</div></div><div class="info-2"><div class="info-item-1">格式化字符串漏洞1. 漏洞原理在 C 语言中，printf 这一类函数会根据传入的 格式化字符串（format string）解析参数，例如： 1printf(&quot;hello %s\n&quot;, name);  但如果程序员直接写成： 1printf(input);  而没有提供额外参数，用户输入就会直接被当成格式化字符串解析。这时攻击者可以通过特殊的格式符（如 %p、%s、%n）来读取或写入内存，从而造成严重漏洞。  2. 基本利用方式(1) %p —— 打印栈上的地址 %p 会从栈上依次取出参数并以指针形式打印，不会解引用。 在没有参数的情况下，printf 还是会从栈上取值，因此我们能通过连续输入多个 %p 来泄露栈上的内容。  示例： 12输入: %p  #打印二参的地址               输入: %7$p #打印第八个参数的地址   (2) %s —— 打印指定地址的字符串 %s 会把栈上的值当作 指针，然后尝试打印这个地址对应的字符串(解引用)。  示例： 1输入: %4$s #打印第五个参数解引用后的值  表示取栈上第 5 个参数的值作为地址，...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://youke1.picui.cn/s1/2025/08/26/68adc8086b77a.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">futurefe</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/futurefe414/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Shellcode-%E6%B1%87%E7%BC%96%E5%B0%8F-Tips"><span class="toc-number">1.</span> <span class="toc-text">Shellcode 汇编小 Tips</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="toc-number">1.1.</span> <span class="toc-text">前置知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-mmap-%E4%B8%8E%E5%8F%AF%E6%89%A7%E8%A1%8C%E5%86%85%E5%AD%98"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.mmap 与可执行内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%B8%B8%E8%A7%81-syscall-%E7%BC%96%E5%8F%B7"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 常见 syscall 编号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-asm-%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.3.</span> <span class="toc-text">3. asm()函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8Ftips"><span class="toc-number">1.2.</span> <span class="toc-text">小tips</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BB%95%E8%BF%87%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A3%80%E6%B5%8B%EF%BC%88strlen-%E7%AD%89%EF%BC%89%E2%80%94-push-0"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 绕过字符串检测（strlen 等）—&gt; push 0;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B2%A1%E6%9C%89-bin-sh-%E2%80%94-%E5%86%99%E5%85%A5-bin-sh%E5%88%B0%E6%98%A0%E5%B0%84%E7%9A%84%E5%86%85%E5%AD%98%E4%B8%AD"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.没有&#x2F;bin&#x2F;sh  —&gt;写入&#x2F;bin&#x2F;sh到映射的内存中</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-mov-%E6%B6%88%E8%80%97%E8%BF%87%E5%A4%A7-%E2%80%94-push-pop"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.mov 消耗过大 —&gt; push + pop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%BF%BB%E8%AF%91%E6%B1%87%E7%BC%96%E7%9A%84%E7%BD%91%E7%AB%99"><span class="toc-number">1.2.4.</span> <span class="toc-text">4.翻译汇编的网站</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/09/02/Day%2001%20C#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95.html" title="Day 01 C#基础语法"><img src="https://img.cdn1.vip/i/68b6793b340fe_1756789051.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 01 C#基础语法"/></a><div class="content"><a class="title" href="/2025/09/02/Day%2001%20C#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95.html" title="Day 01 C#基础语法">Day 01 C#基础语法</a><time datetime="2025-09-01T16:00:00.000Z" title="Created 2025-09-02 00:00:00">2025-09-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/08/31/Day%2005%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E.html" title="Day 05 格式化字符串漏洞"><img src="https://img.cdn1.vip/i/68b3b8763bc1f_1756608630.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 05 格式化字符串漏洞"/></a><div class="content"><a class="title" href="/2025/08/31/Day%2005%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E.html" title="Day 05 格式化字符串漏洞">Day 05 格式化字符串漏洞</a><time datetime="2025-08-30T16:00:00.000Z" title="Created 2025-08-31 00:00:00">2025-08-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html" title="Day 04 shellcode之手写汇编小tips"><img src="https://img.cdn1.vip/i/68b256b7a2f16_1756518071.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 04 shellcode之手写汇编小tips"/></a><div class="content"><a class="title" href="/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html" title="Day 04 shellcode之手写汇编小tips">Day 04 shellcode之手写汇编小tips</a><time datetime="2025-08-29T16:00:00.000Z" title="Created 2025-08-30 00:00:00">2025-08-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/08/29/Day%2003%20shellcode%E4%B9%8B%EF%BC%9A%E6%9D%BF%E5%AD%90%E5%81%9Apwn,%E6%98%93%E5%A6%82%E5%8F%8D%E6%8E%8C.html" title="Day 03 shellcode之：板子做pwn,易如反掌"><img src="https://youke1.picui.cn/s1/2025/08/29/68b1170d11e63.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 03 shellcode之：板子做pwn,易如反掌"/></a><div class="content"><a class="title" href="/2025/08/29/Day%2003%20shellcode%E4%B9%8B%EF%BC%9A%E6%9D%BF%E5%AD%90%E5%81%9Apwn,%E6%98%93%E5%A6%82%E5%8F%8D%E6%8E%8C.html" title="Day 03 shellcode之：板子做pwn,易如反掌">Day 03 shellcode之：板子做pwn,易如反掌</a><time datetime="2025-08-28T16:00:00.000Z" title="Created 2025-08-29 00:00:00">2025-08-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/08/28/Day%2002%20%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E5%8F%8A%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF.html" title="Day 02 程序保护机制即绕过思路"><img src="https://youke1.picui.cn/s1/2025/08/28/68afbc53e640d.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 02 程序保护机制即绕过思路"/></a><div class="content"><a class="title" href="/2025/08/28/Day%2002%20%E7%A8%8B%E5%BA%8F%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6%E5%8F%8A%E7%BB%95%E8%BF%87%E6%80%9D%E8%B7%AF.html" title="Day 02 程序保护机制即绕过思路">Day 02 程序保护机制即绕过思路</a><time datetime="2025-08-27T16:00:00.000Z" title="Created 2025-08-28 00:00:00">2025-08-28</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By futurefe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="464916877" data-server="netease" data-type="song" data-fixed="true" data-autoplay="true"> </div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="true" async="async"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script>(() => {
+  const destroyAplayer = () => {
+    if (window.aplayers) {
+      for (let i = 0; i < window.aplayers.length; i++) {
+        if (!window.aplayers[i].options.fixed) {
+          window.aplayers[i].destroy()
+        }
+      }
+    }
+  }
+
+  const runMetingJS = () => {
+    typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+  }
+
+  btf.addGlobalFn('pjaxSend', destroyAplayer, 'destroyAplayer')
+  btf.addGlobalFn('pjaxComplete', loadMeting, 'runMetingJS')
+})()</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      false
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
