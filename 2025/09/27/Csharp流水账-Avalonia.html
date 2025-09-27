@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="-en -zh-CN -zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>流水账-Avalonia | futurefe的碎碎念</title><meta name="author" content="futurefe"><meta name="copyright" content="futurefe"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="流水账-Avalonia 近几天尝试用Avalonia搞了一个Draw(也算是借鉴🦊佬的学习路线了),但是非常悲伤的是没有设计出MVVM的架构，仅是MV架构就要我半条命，ViewModel层拼尽全力不知道该填些什么…小记一下我的折腾。  Model层没有高端的玩意儿，总而言之就是💩山，只有最最最基础的class，没有record、dictionary那些🥹，用不惯喵。我甚至把所有类都塞到了一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="流水账-Avalonia">
+<meta property="og:url" content="https://futurefe414.github.io/2025/09/27/Csharp%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia.html">
+<meta property="og:site_name" content="futurefe的碎碎念">
+<meta property="og:description" content="流水账-Avalonia 近几天尝试用Avalonia搞了一个Draw(也算是借鉴🦊佬的学习路线了),但是非常悲伤的是没有设计出MVVM的架构，仅是MV架构就要我半条命，ViewModel层拼尽全力不知道该填些什么…小记一下我的折腾。  Model层没有高端的玩意儿，总而言之就是💩山，只有最最最基础的class，没有record、dictionary那些🥹，用不惯喵。我甚至把所有类都塞到了一">
+<meta property="og:locale">
+<meta property="og:image" content="https://futurefe414.github.io/images/background/%E7%8B%90%E5%A6%96/0.jpg">
+<meta property="article:published_time" content="2025-09-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-27T12:49:47.726Z">
+<meta property="article:author" content="futurefe">
+<meta property="article:tag" content="Avalonia">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://futurefe414.github.io/images/background/%E7%8B%90%E5%A6%96/0.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "流水账-Avalonia",
+  "url": "https://futurefe414.github.io/2025/09/27/Csharp%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia.html",
+  "image": "https://futurefe414.github.io/images/background/%E7%8B%90%E5%A6%96/0.jpg",
+  "datePublished": "2025-09-26T16:00:00.000Z",
+  "dateModified": "2025-09-27T12:49:47.726Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "futurefe",
+      "url": "https://futurefe414.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/images/facial.jpg"><link rel="canonical" href="https://futurefe414.github.io/2025/09/27/Csharp%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":80,"languages":{"author":"Author: futurefe","link":"Link: ","source":"Source: futurefe的碎碎念","info":"Copyright belongs to the author. For commercial use, please contact the author for authorization. For non-commercial use, please indicate the source."}},
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '流水账-Avalonia',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(https://i.loli.net/2019/09/09/5oDRkWVKctx2b6A.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/images/facial.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Friends</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/images/background/%E7%8B%90%E5%A6%96/04.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/images/facial.jpg" alt="Logo"><span class="site-name">futurefe的碎碎念</span></a><a class="nav-page-title" href="/"><span class="site-name">流水账-Avalonia</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Friends</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">流水账-Avalonia</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-09-26T16:00:00.000Z" title="Created 2025-09-27 00:00:00">2025-09-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-09-27T12:49:47.726Z" title="Updated 2025-09-27 20:49:47">2025-09-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Csharp/">Csharp</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="流水账-Avalonia"><a href="#流水账-Avalonia" class="headerlink" title="流水账-Avalonia"></a>流水账-Avalonia</h1><blockquote>
+<p>近几天尝试用<code>Avalonia</code>搞了一个<code>Draw</code>(<del>也算是借鉴🦊佬的学习路线了</del>),但是非常悲伤的是没有设计出MVVM的架构，<del>仅是MV架构就要我半条命</del>，ViewModel层拼尽全力不知道该填些什么…小记一下我的折腾。</p>
+</blockquote>
+<h2 id="Model层"><a href="#Model层" class="headerlink" title="Model层"></a>Model层</h2><p>没有高端的玩意儿，总而言之就是💩山，只有最最最基础的<code>class</code>，没有<code>record</code>、<code>dictionary</code>那些🥹，用不惯喵。我甚至把所有类都塞到了一个<code>.cs</code>文件里,不过能跑就⭐（×），唉唉，不管了。    </p>
+<p>我设计了四个类，<code>Prize</code>、<code>Participant</code>、<code>DrawResult</code>、<code>DrawManager</code>，分别用来放奖项信息、参与者信息、抽奖结果和抽奖发起者的行为。</p>
+<p>前三个类存放相关信息，当然也要支持修改，支持读取，所以均使用<code>&#123;get;set;&#125;</code>访问控制器。</p>
+<p>至于抽奖发起者，一个最重要的行为就是要组织开奖，也就是获取<code>DrawWinners()</code>的行为，而获奖者一般也不止一个，所以我选用了<code>List</code>,也就封装出了<code>public List&lt;DrawResult&gt; DrawWinners()</code>这个函数。接下来细想一下，这个函数需要哪些实现逻辑呢？</p>
+<ul>
+<li>首先需要获取参与者信息</li>
+<li>当然也需要获取奖项设立的情况</li>
+<li>抽奖的随机性也是必须的</li>
+<li>最后还要及时删除参与者的数据，避免重复抽奖</li>
+</ul>
+<p>如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;DrawResult&gt; <span class="title">DrawWinners</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> results = <span class="keyword">new</span> List&lt;DrawResult&gt;();</span><br><span class="line">    <span class="keyword">var</span> availableParticipants = _participants.ToList();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果没有参与者，返回空结果</span></span><br><span class="line">    <span class="keyword">if</span> (availableParticipants.Count == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> results;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> prize <span class="keyword">in</span> _prizes)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 计算实际抽奖数量：取奖项数量和剩余参与者数量的较小值</span></span><br><span class="line">        <span class="built_in">int</span> actualQuantity = Math.Min(prize.Quantity, availableParticipants.Count);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; actualQuantity &amp;&amp; availableParticipants.Count &gt; <span class="number">0</span>; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> randomIndex = _random.Next(availableParticipants.Count);</span><br><span class="line">            <span class="keyword">var</span> winner = availableParticipants[randomIndex];</span><br><span class="line">            </span><br><span class="line">            results.Add(<span class="keyword">new</span> DrawResult</span><br><span class="line">            &#123;</span><br><span class="line">                WinnerName = winner.Name,</span><br><span class="line">                Prize = prize,</span><br><span class="line">                DrawTime = DateTime.Now</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            availableParticipants.RemoveAt(randomIndex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _results.AddRange(results);</span><br><span class="line">    <span class="keyword">return</span> results;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上就是抽奖的实现逻辑，此外，值得一提的是<code>readonly</code>关键字的使用，</p>
+<ol>
+<li></li>
+</ol>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">readonly</span> List&lt;Participant&gt; _participants = <span class="keyword">new</span>();</span><br></pre></td></tr></table></figure>
+
+<p>这是private封装（内部只读存储），<code>readonly</code>使它不能被重新赋值（例如不能再 <code>_participants = new List&lt;...&gt;()</code>），但<strong>可以修改集合内部的元素</strong>（如 <code>_participants.Add(...)</code>），这就可以很好地支持了操作部分参与者的需求。</p>
+<ol start="2">
+<li></li>
+</ol>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> ReadOnlyCollection&lt;Participant&gt; Participants =&gt; _participants.AsReadOnly();</span><br></pre></td></tr></table></figure>
+
+<p>这也是封装（readonly只读保护），给外部提供的<code>readonly</code>只读访问接口，支持获取参与者信息，也保护了数据不被外部删改。</p>
+<h2 id="View层"><a href="#View层" class="headerlink" title="View层"></a>View层</h2><p>View视图的UI设计(<code>.axaml</code>)和事件绑定(<code>.axaml.cs</code>)相关的数据交互我都放在了这一层处理。</p>
+<p>关于UI设计等我过几天再补吧，太累了，先不写了（</p>
+<h2 id="从-csproj到-exe"><a href="#从-csproj到-exe" class="headerlink" title="从.csproj到.exe"></a>从<code>.csproj</code>到<code>.exe</code></h2><p>在这一步我也走了很多的弯路，最后也是在拷打<code>llm</code>各AI大模型下完成了这最后一步。<del>总而言之，能跑就是win!</del></p>
+<h2 id="Keep-Ongoing"><a href="#Keep-Ongoing" class="headerlink" title="Keep Ongoing"></a>Keep Ongoing</h2><p>👆🏼</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://futurefe414.github.io">futurefe</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://futurefe414.github.io/2025/09/27/Csharp%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia.html">https://futurefe414.github.io/2025/09/27/Csharp%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Avalonia/">Avalonia</a></div><div class="post-share"><div class="social-share" data-image="/images/background/%E7%8B%90%E5%A6%96/0.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/09/04/Day%2002%20LINQ.html" title="Day 02 LINQ"><img class="cover" src="/images/background/%E4%B8%9C%E6%96%B9/04.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Day 02 LINQ</div></div><div class="info-2"><div class="info-item-1">LINQ1. 什么是 LINQ？LINQ（Language Integrated Query，语言集成查询）是 C# 3.0 引入的一种查询语法，它让你能用类似 SQL 的语法来操作集合（对象、数组、XML、数据库数据等）。正是因为LINQ可以像SQL一样操作数据库，所以也被人戏称为db(database)。 核心思想：用一种统一的方式查询不同的数据源。 比如你要筛选一个数组中的偶数： 123456789101112131415161718192021using System;using System.Linq;class Program&#123;    static void Main()    &#123;        int[] numbers = &#123; 1, 2, 3, 4, 5, 6 &#125;;        // 使用 LINQ 查询语法        var evens = from n in numbers                    where n % 2 == 0                    select n;       ...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/images/facial.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">futurefe</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/futurefe414/"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia"><span class="toc-number">1.</span> <span class="toc-text">流水账-Avalonia</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Model%E5%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">Model层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#View%E5%B1%82"><span class="toc-number">1.2.</span> <span class="toc-text">View层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8E-csproj%E5%88%B0-exe"><span class="toc-number">1.3.</span> <span class="toc-text">从.csproj到.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Keep-Ongoing"><span class="toc-number">1.4.</span> <span class="toc-text">Keep Ongoing</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/09/27/Csharp%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia.html" title="流水账-Avalonia"><img src="/images/background/%E7%8B%90%E5%A6%96/0.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="流水账-Avalonia"/></a><div class="content"><a class="title" href="/2025/09/27/Csharp%E6%B5%81%E6%B0%B4%E8%B4%A6-Avalonia.html" title="流水账-Avalonia">流水账-Avalonia</a><time datetime="2025-09-26T16:00:00.000Z" title="Created 2025-09-27 00:00:00">2025-09-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/09/04/Day%2002%20LINQ.html" title="Day 02 LINQ"><img src="/images/background/%E4%B8%9C%E6%96%B9/04.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 02 LINQ"/></a><div class="content"><a class="title" href="/2025/09/04/Day%2002%20LINQ.html" title="Day 02 LINQ">Day 02 LINQ</a><time datetime="2025-09-03T16:00:00.000Z" title="Created 2025-09-04 00:00:00">2025-09-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/09/02/Day%2001%20Csharp%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95.html" title="Day 01 Csharp基础语法"><img src="/images/background/%E4%B8%9C%E6%96%B9/02.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 01 Csharp基础语法"/></a><div class="content"><a class="title" href="/2025/09/02/Day%2001%20Csharp%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95.html" title="Day 01 Csharp基础语法">Day 01 Csharp基础语法</a><time datetime="2025-09-01T16:00:00.000Z" title="Created 2025-09-02 00:00:00">2025-09-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/08/31/Day%2005%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E.html" title="Day 05 格式化字符串漏洞"><img src="/images/background/%E7%8B%90%E5%A6%96/4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 05 格式化字符串漏洞"/></a><div class="content"><a class="title" href="/2025/08/31/Day%2005%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E.html" title="Day 05 格式化字符串漏洞">Day 05 格式化字符串漏洞</a><time datetime="2025-08-30T16:00:00.000Z" title="Created 2025-08-31 00:00:00">2025-08-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html" title="Day 04 shellcode之手写汇编小tips"><img src="/images/background/%E7%8B%90%E5%A6%96/2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Day 04 shellcode之手写汇编小tips"/></a><div class="content"><a class="title" href="/2025/08/30/Day%2004%20shellcode%E4%B9%8B%E6%89%8B%E5%86%99%E6%B1%87%E7%BC%96%E5%B0%8Ftips.html" title="Day 04 shellcode之手写汇编小tips">Day 04 shellcode之手写汇编小tips</a><time datetime="2025-08-29T16:00:00.000Z" title="Created 2025-08-30 00:00:00">2025-08-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By futurefe</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="Toggle Between Traditional and Simplified Chinese">繁</button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="464916877" data-server="netease" data-type="song" data-fixed="true" data-autoplay="true"> </div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="true" async="async"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script>(() => {
+  const destroyAplayer = () => {
+    if (window.aplayers) {
+      for (let i = 0; i < window.aplayers.length; i++) {
+        if (!window.aplayers[i].options.fixed) {
+          window.aplayers[i].destroy()
+        }
+      }
+    }
+  }
+
+  const runMetingJS = () => {
+    typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+  }
+
+  btf.addGlobalFn('pjaxSend', destroyAplayer, 'destroyAplayer')
+  btf.addGlobalFn('pjaxComplete', loadMeting, 'runMetingJS')
+})()</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>(() => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => fn())
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      const usePjax = true
+      false
+        ? (usePjax ? pjax.loadUrl('/404.html') : window.location.href = '/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})()</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
