@@ -1,0 +1,65 @@
+- class_name: 友情链接
+  class_desc: 那些人，那些事
+  link_list:
+    - name: zer00ne
+      link: https://khighl.github.io/
+      avatar: /images/background/01.jpg
+      descr: ctfer&pwn 世界上最好的mentor ˶╹ꇴ╹˶ 01
+  
+    - name: s3loy
+      link: https://blog.s3loy.tech/
+      avatar: https://blog.s3loy.tech/images/1.jpg
+      descr: The great Linux pioneer.
+
+    - name: 🦊的小屋
+      link: https://blog.jagdender.ink/
+      avatar: https://blog.jagdender.ink/image/avatar.jpg
+      descr: 最喜欢吃小孩的🦊
+
+    - name: SeanDictionary
+      link: https://seandictionary.top/
+      avatar: https://seandictionary.top/wp-content/uploads/2024/09/哭哭_透明.png
+      descr: SeanDictionary | 折腾日记
+
+    - name: Max
+      link: http://maxqian.me/zh-cn/
+      avatar: /images/background/max.jpg
+      descr: 全栈神
+
+        
+    - name: spreng
+      link: https://spreng.top/
+      avatar: /images/background/spreng.jpg
+      descr: Re大手子
+
+    - name: soapsama
+      link: https://soapsama.cn/
+      avatar: https://cdn.jsdelivr.net/gh/soapsama7/cdn_img@latest/post/avatar.jpg
+      descr: Yume konSeki
+
+    - name: Pure Stream
+      link: https://marblue.pink/
+      avatar: https://marblue.pink/img/purestream.jpg
+      descr: web | miHoYo！！
+
+# - class_name: 双端自适应二次元随机图API
+#   class_desc: 推荐一个貌美图片调用API
+#   link_list:
+#     - name: LoliAPI
+#       link: https://www.loliapi.com/acg/
+
+#- class_name: 网站
+#  class_desc: 值得推荐的网站
+#  link_list:
+#    - name: Youtube
+#      link: https://www.youtube.com/
+#      avatar: https://i.loli.net/2020/05/14/9ZkGg8v3azHJfM1.png
+#      descr: 视频网站
+#    - name: Weibo
+#      link: https://www.weibo.com/
+#      avatar: https://i.loli.net/2020/05/14/TLJBum386vcnI1P.png
+#      descr: 中国最大社交分享平台
+#    - name: Twitter
+#      link: https://twitter.com/
+#      avatar: https://i.loli.net/2020/05/14/5VyHPQqR6LWF39a.png
+#      descr: 社交分享平台
