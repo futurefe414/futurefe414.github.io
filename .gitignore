@@ -1,5 +1,18 @@
-# 忽略根目录所有文件和文件夹（除了 source/_posts）
+# 忽略仓库根下的所有（包括文件和目录）
 /*
+
+# 保留 .gitignore 自身（否则你会把它也忽略掉）
+!.gitignore
+
+# 保留 source 目录（否则无法取消忽略其子目录）
 !/source/
+
+# 忽略 source 下的所有内容（先排除，再显式放行_posts）
 /source/*
+
+# 放行 _posts 目录及其所有子文件
 !/source/_posts/
+!/source/_posts/**
+
+# （可选）如果需要保留 README 或其他文件，单独放行
+# !/README.md
