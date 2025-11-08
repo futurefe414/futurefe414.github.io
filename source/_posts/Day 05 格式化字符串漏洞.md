@@ -8,6 +8,7 @@ tags:
 categories: pwn
 top_img: /images/background/狐妖/00.jpg
 cover: /images/background/狐妖/4.jpg
+description: 格式化字符串漏洞很好用，可以实现任意写，可是它好高级好难懂啊，我学不会 TvT  🥹🥹
 ---
 # 格式化字符串漏洞
 

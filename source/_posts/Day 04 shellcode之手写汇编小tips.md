@@ -8,6 +8,7 @@ tags:
 categories: pwn
 top_img: /images/background/狐妖/03.jpg
 cover: /images/background/狐妖/2.jpg
+description: 回归底层汇编，领悟实现逻辑。
 ---
 
 # Shellcode 汇编小 Tips

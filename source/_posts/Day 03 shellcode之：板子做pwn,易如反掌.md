@@ -8,6 +8,7 @@ tags:
 categories: pwn
 top_img: /images/background/狐妖/02.jpg
 cover: /images/background/狐妖/1.jpg
+description: 先进的科技解放生产力！！😜😜
 ---
 # shellcraft杂谈
 

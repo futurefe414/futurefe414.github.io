@@ -4,6 +4,7 @@ date: 2025-10-10
 categories: pwn
 top_img: /images/background/东方/08.jpg
 cover: /images/background/东方/07.jpg
+description: 签到周，这时候的ctf还是很好玩的🥰
 ---
 
 # Pwn

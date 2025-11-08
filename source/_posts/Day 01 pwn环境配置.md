@@ -10,6 +10,7 @@ tags:
 categories: pwn
 top_img: /images/background/00.jpg
 cover: /images/background/bkimg.jpg
+description: 遇到了最好的01师傅🥰🥰🥹🥹🥹
 ---
 # Ubuntu 下 Pwn 环境配置
 

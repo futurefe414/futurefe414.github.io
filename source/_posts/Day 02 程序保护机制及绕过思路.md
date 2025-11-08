@@ -9,6 +9,7 @@ tags:
 categories: pwn
 top_img: /images/background/03.jpg
 cover: /images/background/02.png
+description: 二进制的世界太诱人了，so inviting!
 ---
 
 # ELF 文件的常见保护机制及绕过思路

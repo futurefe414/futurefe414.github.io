@@ -5,6 +5,7 @@ tags: LINQ
 categories: Csharp
 top_img: /images/background/东方/1.jpg
 cover: /images/background/东方/04.jpg
+description: 哇，零基础的我居然可以读出来这是什么意思😋😋
 ---
 # LINQ 
 

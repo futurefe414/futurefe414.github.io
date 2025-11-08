@@ -73,7 +73,8 @@ avatar:
 disable_top_img: false
 
 # If the banner of page not setting, it will show the default_top_img
-default_top_img: https://www.loliapi.com/acg/
+default_top_img: https://www.loliapi.com/acg
+
 
 # The banner image of index page
 index_img: /images/top.jpg
@@ -111,7 +112,9 @@ cover:
   aside_enable: true
   archives_enable: true
   # When cover is not set, the default cover is displayed
-  default_cover: https://www.loliapi.com/acg/
+  default_cover: 
+    - https://www.loliapi.com/acg/?t=<%= new Date().getTime() %>
+    - https://www.loliapi.com/acg/?rand=<%= Math.random() %>
     # - xxx.jpg
 
 # Replace Broken Images
@@ -191,10 +194,10 @@ index_layout: 3
 # 2: both (if the description exists, it will show description, or show the auto_excerpt)
 # 3: auto_excerpt (default)
 # false: do not show the article introduction
-index_post_content:
-  method: 3
+index_post_content: 
+  method: 1
   # If you set method to 2 or 3, the length need to config
-  length: 500
+  # length: 30
 
 # --------------------------------------
 # Post Settings

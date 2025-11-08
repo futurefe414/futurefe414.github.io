@@ -5,6 +5,7 @@ tags: Avalonia
 categories: Csharp
 top_img: /images/background/狐妖/09.jpg
 cover: /images/background/狐妖/21.jpg
+description: 环境配置，非常简单。
 ---
 
 # 跨平台的“现代WPF”

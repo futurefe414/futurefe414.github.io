@@ -5,7 +5,7 @@ tags: 语法糖
 categories: Csharp
 top_img: /images/background/东方/0.jpg
 cover: /images/background/东方/02.jpg
-
+description: 真吓哭了，第一次授课的时候临时才发现电脑坏了 :(
 ---
 
 # 🚀 Day 01  C#基础语法
@@ -23,6 +23,203 @@ C#（C-Sharp）是微软开发的现代编程语言，运行在 **.NET 平台** 
 7. 数组与集合
 
 ------
+
+## 先上源码，因为懒得写授课的文档。XD
+
+```csharp
+// global using System; //隐式导入
+#pragma warning disable CS0219  //disable 禁用警告
+Console.WriteLine("aaa");
+
+Console.WriteLine("Hello, World!");
+int x = 42;
+int y = 2;
+Console.WriteLine(int.MaxValue);
+long xx = -12345;
+Console.WriteLine(long.MaxValue);
+double d = 2.33;
+float z = 3.14F;
+decimal w = 19.99M;
+char letter = 'a';
+string greeting = "111";
+Console.WriteLine(greeting.Length);
+bool isActive = true;
+Console.WriteLine(isActive);
+Console.WriteLine("{0}", x);
+System.Console.WriteLine($"{x}");
+string? c = Console.ReadLine();
+Console.WriteLine(c);
+int? value = null;
+string? reference = null;
+Console.WriteLine(value);
+Console.WriteLine("{1} is not {0}", x, value);
+
+x = int.Parse(greeting);
+
+int Sum(int a, int b = 3) => a + b; // 可选参数，类比形参/实参。
+Console.WriteLine($"Sum: {Sum(1)}");
+void Swap(ref int x, ref int y)
+{
+    int temp = x;
+    x = y; // 直接修改外部变量的引用
+    y = temp;
+}
+Console.WriteLine($"x={x},y={y}");
+Swap(ref x, ref y);
+
+//Console.WriteLine(x,y);
+//Console.WriteLine($"{Swap(ref x, ref y)}");
+Console.WriteLine($"x={x},y={y}");
+
+// 计算和与差，用 out 返回差
+static int Add(int a, int b, out int diff)
+{
+    diff = a - b; // 必须给 out 参数赋值
+    return a + b; // 返回和
+}
+
+// 调用
+int sum = Add(5, 3, out int diff);
+Console.WriteLine($"和：{sum}，差：{diff}"); // 输出：和：8，差：2
+
+// ref 关键字,声明为引用类型，会改变外部数据。  值类型传递的是副本。
+// out 用于返回多个值，声明out int a,调用out a,调用和声明时都加 out。
+bool result = int.TryParse("123", out int parsedValue);
+if (result)
+{
+    Console.WriteLine($"Parsed Value: {parsedValue}");
+}
+else
+{
+    Console.WriteLine("Parsing failed.");
+}
+
+int i = 0;
+while (i < 3)
+    System.Console.WriteLine(i++);
+
+// foreach (var item in collection) { }
+int num = 1;
+switch (num)
+{
+    case 1:
+        Console.WriteLine(x);
+        break;
+    case 2:
+        goto case 99;
+    case 99:
+        Console.WriteLine(233);
+        break;
+}
+
+object b = "abc"; //可以接受所有类型，是所有类型的父类(基类)，其他都是object的子类。
+b = 233;
+Console.WriteLine(b);
+
+int[] numbers = [1, 2, 3, 4, 5];
+var arr2 = new int[5]; //声明长度为5的数组，默认值为0。
+Console.WriteLine($"Numbers: {string.Join(", ", numbers)}"); // 将集合（如数组）中的元素拼接成一个字符串。
+object[] mixedArray = [1, "two", 3.0, true];
+int[] arr = [3, 1, 2];
+Array.Sort(arr); // 结果：[1,2,3]
+Array.Reverse(arr); //结果：[3,2,1]
+int index = Array.IndexOf(arr, 2); //index= 1  etc..
+var sliced = arr[1..3]; // 切片，结果：[2,3]
+int[] e = [1];
+e = [2, 3];
+Console.WriteLine(e.Length);
+
+Dictionary<int, string> dictionay = new() { { 1, "one" }, { 2, "two" } };
+Console.WriteLine(dictionay[1]); // 输出：one
+
+// 元组（Tuple）
+// 匿名值元组（元素默认名为 Item1, Item2, ...）
+var tuple1 = (10, "apple", 3.14);
+Console.WriteLine(tuple1.Item1); // 输出：10
+Console.WriteLine(tuple1.Item2); // 输出：apple
+
+// 命名值元组（自定义元素名称，更易读）
+var tuple2 = (Id: 100, Name: "Alice", Score: 95.5);
+Console.WriteLine(tuple2.Id); // 输出：100
+Console.WriteLine(tuple2.Name); // 输出：Alice
+
+// 方法返回命名元组
+(string Name, int Age) GetPerson()
+{
+    return ("Charlie", 30);
+}
+var (n, age) = GetPerson();
+Console.WriteLine($"{n}, {age}"); // 输出：Charlie, 30
+
+//discard 弃元，_,下划线作为占位符，表示忽略某个值。
+var person = ("Alice", 30, "Female"); // 元组
+var (name, _, gender) = person; // 忽略年龄（第二个元素）
+Console.WriteLine($"Name: {name}, Gender: {gender}"); // 输出：Name: Alice, Gender: Female
+
+Color favoriteColor = Color.Red & Color.Blue;
+var color = Color.Red | Color.Green;
+var allcolors = Color.Red | Color.Green | Color.Blue;
+Console.WriteLine(favoriteColor);
+Console.WriteLine(color);
+Console.WriteLine(allcolors);
+bool hasRed = color.HasFlag(Color.Red);
+var allinone = Color.All;
+if (allinone.HasFlag(Color.Green))
+{
+    Console.Write("Green");
+}
+if (allinone.HasFlag(Color.Blue))
+{
+    Console.Write(" Blue");
+}
+if (allinone.HasFlag(Color.Red))
+{
+    Console.Write(" Red");
+}
+
+[Flags] //该特性支持位运算。
+enum Color
+{
+    white = 0,
+    Red = 1 << 0, //0
+    Green = 1 << 1, //1
+    Blue = 1 << 2, //2
+    All = ~0, //所有位都为1
+}
+
+/* partial class Program   //partial 关键字允许将类、结构体或接口的定义分散在多个文件中。多个文件中都定义和使用了同一个类名，使用partial声明他们是同一个类，并将他们聚合在一起。
+{
+    public static void Main()  //访问修饰符public，static声明为静态方法，依赖类名调用，不依赖类的实例化对象。
+    {    //static修饰的方法不能访问非静态成员。因为该方法在类加载时就存在，已经在内存中而非静态成员需要通过实例化对象才能访问。
+        Console.WriteLine("Main method executed.");
+    }
+} */
+
+/* List<int> numbersList = [1, 2, 3];
+var list = new List<int> { 1, 2, 3, 4, 5 };
+Console.WriteLine($"List Count: {list.Count}");
+list = [10, 20, 30];
+Console.WriteLine(list.Count); */
+
+/* dynamic d = "Dynamic String";
+Console.WriteLine(d.Length);
+d = 12345;
+Console.WriteLine(d + 10);
+*/
+
+/* class Person
+{
+   public required string Name { get; set; }
+   public int Age { get; set; }
+}
+ */
+
+#pragma warning restore CS0219  //restore 恢复
+#pragma warning restore CS0162
+
+```
+
+
 
 ## 1️⃣ 程序入口
 
