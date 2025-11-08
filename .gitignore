@@ -1,11 +1,5 @@
-# 忽略编译产物
-public/
-.deploy_git/
-# 忽略依赖包
-node_modules/
-# 忽略系统缓存文件
-.DS_Store
-Thumbs.db
-# 忽略主题的.git 文件夹（如果主题是克隆的，需手动删除 themes/你的主题/.git 文件夹）
-themes/*/.git
-themes/*/.gitignore
+# 忽略根目录所有文件和文件夹（除了 source/_posts）
+/*
+!/source/
+/source/*
+!/source/_posts/
