@@ -2,7 +2,8 @@
 title: 0xGame Week3 WP
 date: 2025-11-07
 categories: pwn
-top_img: https://www.loliapi.com/acg/
+cover: /images/background/东方/2.jpg
+top_img: /images/background/东方/2.jpg
 description: 燃尽了，想做个Agent🤔🤔
 ---
 

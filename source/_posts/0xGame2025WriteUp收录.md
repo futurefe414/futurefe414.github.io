@@ -2,7 +2,6 @@
 title: 0xGame2025WriteUp收录
 date: 2025-11-08
 categories: pwn
-top_img: https://www.loliapi.com/acg/
 description: 想做个专门用来解CTF的题的Agent，给它喂大量的WriteUp题解数据，但我岂不是无敌了，哈哈哈哈哈~~(死前突发恶疾，白日臆想)👆🏼🤓
 ---
 
