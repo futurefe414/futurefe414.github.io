@@ -2,6 +2,7 @@
 (function () {
   var baseTop = window.BUTTERFLY_RANDOM_TOP || "https://www.loliapi.com/acg";
   var baseCover = window.BUTTERFLY_RANDOM_COVER || baseTop;
+  var hasPostCover = !!window.BUTTERFLY_HAS_POST_COVER;
 
   function cacheBustedUrl(base) {
     var sep = base.indexOf('?') === -1 ? '?' : '&';
@@ -21,17 +22,23 @@
   }
 
   function applyRandomToSelectors() {
-    // 如果你的主题类名不同，可按需调整这些选择器
-    var topSelectors = ['.post-cover', '.page-cover', '.banner', '.hero'];
-    var coverSelectors = ['.post .cover', '.article-cover', '.post-thumbnail img'];
+    // 如果文章自己指定了 top_img/cover，则跳过覆盖文章顶部（post 页）相关元素
+    // 但仍可覆盖列表中缩略图等（按需修改）
+    var topSelectors = ['.post-cover', '.page-cover', '.banner', '.hero']; // 文章顶部容器或 hero 区域
+    var coverSelectors = ['.post .cover', '.article-cover', '.post-thumbnail img']; // 列表或缩略图
 
     var topUrl = cacheBustedUrl(baseTop);
-    topSelectors.forEach(function (sel) {
-      var els = document.querySelectorAll(sel);
-      els.forEach(function (el) { setImgOrBg(el, topUrl); });
-    });
-
     var coverUrl = cacheBustedUrl(baseCover);
+
+    // 文章页顶部：只有在文章没有指定 top_img/cover 时才覆盖
+    if (!hasPostCover) {
+      topSelectors.forEach(function (sel) {
+        var els = document.querySelectorAll(sel);
+        els.forEach(function (el) { setImgOrBg(el, topUrl); });
+      });
+    }
+
+    // 列表页/缩略图：通常不由 front-matter 指定，直接覆盖（如果你不想覆盖缩略图，把这段删除）
     coverSelectors.forEach(function (sel) {
       var els = document.querySelectorAll(sel);
       els.forEach(function (el) { setImgOrBg(el, coverUrl); });
