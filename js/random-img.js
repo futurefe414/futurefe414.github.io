@@ -1,4 +1,4 @@
-// random-img.js — 最简单的动态随机图并加入 cache-buster
+// random-img.js — 给文章顶部和封面设置带时间戳/随机数的 loliapi URL，避免浏览器缓存
 (function () {
   var baseTop = window.BUTTERFLY_RANDOM_TOP || "https://www.loliapi.com/acg";
   var baseCover = window.BUTTERFLY_RANDOM_COVER || baseTop;
@@ -21,18 +21,9 @@
   }
 
   function applyRandomToSelectors() {
-    // 常见 Butterfly 主题中可能使用的选择器，覆盖文章顶部和封面
-    var topSelectors = [
-      '.post-cover',       // 文章顶部封面（常见）
-      '.page-cover',       // 页面封面
-      '.banner',           // 主题 banner
-      '.hero'              // hero 区域
-    ];
-    var coverSelectors = [
-      '.post .cover',      // 某些主题结构的文章封面
-      '.article-cover',    // 另一些命名
-      '.post-thumbnail img'// 列表缩略图中的 img
-    ];
+    // 如果你的主题类名不同，可按需调整这些选择器
+    var topSelectors = ['.post-cover', '.page-cover', '.banner', '.hero'];
+    var coverSelectors = ['.post .cover', '.article-cover', '.post-thumbnail img'];
 
     var topUrl = cacheBustedUrl(baseTop);
     topSelectors.forEach(function (sel) {
