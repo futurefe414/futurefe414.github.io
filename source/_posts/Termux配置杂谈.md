@@ -107,7 +107,7 @@ dotnet --version   # 输出版本号说明安装成功
 
 #### **解决**：
 
-*Termux 内核彻底不支持手动创建的 swap*，swap 文件权限和 Termux 系统调用受到限制， 且*.NET Core 启动时需要连续的内存块，而非零散内存*，`dd`也不能实现内存分配。
+**Termux 内核彻底不支持手动创建的 swap，swap 文件权限和 Termux 系统调用受到限制， 且.NET Core 启动时需要连续的内存块，而非零散内存**，`dd`也不能实现内存分配。
 
 但我们可以如下设置：
 
@@ -134,7 +134,7 @@ source ~/.bashrc
 curl -fsSL https://code-server.dev/install.sh | sh
 ```
 
-启动命令：`code-server`，启动一个本地服务器，默认url是http://127.0.0.1:8080，初始密码：`cat ~/.config/code-server/config.yaml`，修改可以用`vim ~/.config/code-server/config.yaml`  修改。
+启动命令：`code-server`，启动一个本地服务器，默认url是`http://127.0.0.1:8080`，初始密码：`cat ~/.config/code-server/config.yaml`，修改可以用`vim ~/.config/code-server/config.yaml`  修改。
 
 # 媒体文件
 
