@@ -1,5 +1,5 @@
 ---
-title: OOP面向对象基础
+title: OOP面向对象基础：封装
 date: 2025-11-10
 tags: 语法糖
 categories: Csharp
