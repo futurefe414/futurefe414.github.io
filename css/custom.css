@@ -1,0 +1,102 @@
+/* custom.css — Butterfly 主题代码高亮与“终端”样式覆盖 */
+/* 全局代码块背景与前景色（可按需调整） */
+pre[class*="language-"],
+code[class*="language-"] {
+    background: #0f1724 !important;
+    color: #d1e7ff !important;
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+/* 行号样式（如果启用行号） */
+.line-numbers .line-numbers-rows {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.22);
+}
+
+/* 终端 / bash 风格高亮：命令、参数、注释等 */
+.language-bash,
+.language-shell,
+.language-console {
+    background: #0b1220 !important;
+    color: #cde4ff !important;
+}
+
+.language-bash .token.comment {
+    color: #7e8a90;
+    font-style: italic;
+}
+
+.language-bash .token.string {
+    color: #98c379;
+}
+
+.language-bash .token.function {
+    color: #61afef;
+}
+
+.language-bash .token.keyword {
+    color: #c678dd;
+}
+
+.language-bash .token.operator,
+.language-bash .token.punctuation {
+    color: #d19a66;
+}
+
+/* 使代码块复制按钮与主题色协调（Butterfly 用的类名可能不同，按需调整） */
+.copy-code-button,
+.butterfly-copy-button {
+    background: #00c4b6;
+    color: #fff !important;
+    border: none;
+}
+
+.copy-code-button:hover,
+.butterfly-copy-button:hover {
+    background: #00a895;
+}
+
+/* Prism 通用 token 调整（可扩展） */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #7e8a90;
+}
+
+.token.keyword {
+    color: #c678dd;
+}
+
+.token.boolean,
+.token.number {
+    color: #d19a66;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char {
+    color: #98c379;
+}
+
+.token.function,
+.token.class-name {
+    color: #61afef;
+}
+
+/* 让链接颜色与主题协调 */
+pre a {
+    color: #ffd7e0;
+    text-decoration: underline;
+}
+
+/* 针对浅色主题做个容错（如果你同时使用 light mode） */
+html.theme-light pre[class*="language-"] {
+    background: #f6f8fa !important;
+    color: #2b3440 !important;
+}
+
+/* 额外：如果你想用 CDN 的 Prism 主题，记得把它放在 inject.head 并确保本文件在其后加载以覆盖样式 */
