@@ -1,3 +1,145 @@
+/* custom.css — Butterfly 主题（基于 #FFB7C5 粉色）
+    说明：此文件覆盖代码块、bash/终端样式、复制按钮等，使高亮与主题主色协调。
+*/
+:root {
+    --butterfly-accent: #FFB7C5;
+    /* 主题主色 */
+    --code-bg-dark: #0b1220;
+    /* 深色代码背景 */
+    --code-fg: #f6f0f2;
+    /* 代码前景（深色模式） */
+    --muted: #7e8a90;
+    /* 注释等次级颜色 */
+    --copy-btn-bg: var(--butterfly-accent);
+}
+
+/* 通用代码块样式 */
+pre[class*="language-"],
+code[class*="language-"] {
+    background: var(--code-bg-dark) !important;
+    color: var(--code-fg) !important;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: Consolas, 'Liberation Mono', Menlo, monospace;
+    line-height: 1.6;
+    overflow: auto;
+}
+
+/* 代码选择颜色（配合主题色） */
+.pre[class*="language-"] ::selection,
+pre[class*="language-"]::selection,
+code[class*="language-"] ::selection,
+code[class*="language-"]::selection {
+    background: rgba(255, 183, 197, 0.25);
+    color: inherit;
+}
+
+/* 行号（如果启用了 line-numbers 插件） */
+.line-numbers .line-numbers-rows {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.18);
+}
+
+/* 终端 / bash 风格 */
+.language-bash,
+.language-shell,
+.language-console {
+    background: linear-gradient(180deg, #07101a 0%, var(--code-bg-dark) 100%) !important;
+    color: var(--code-fg) !important;
+}
+
+.language-bash .token.prompt {
+    color: var(--butterfly-accent);
+    font-weight: 700;
+}
+
+.language-bash .token.comment {
+    color: var(--muted);
+    font-style: italic;
+}
+
+.language-bash .token.string {
+    color: #98c379;
+}
+
+.language-bash .token.function {
+    color: #61afef;
+}
+
+.language-bash .token.keyword {
+    color: var(--butterfly-accent);
+}
+
+.language-bash .token.operator,
+.language-bash .token.punctuation {
+    color: #d19a66;
+}
+
+/* 复制按钮与工具条 */
+.copy-code-button,
+.butterfly-copy-button {
+    background: var(--copy-btn-bg);
+    color: #fff !important;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+}
+
+.copy-code-button:hover,
+.butterfly-copy-button:hover {
+    background: #ff9fb9;
+}
+
+/* Prism token 通用覆盖（可按需扩展） */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: var(--muted);
+}
+
+.token.keyword {
+    color: var(--butterfly-accent);
+}
+
+.token.boolean,
+.token.number {
+    color: #d19a66;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char {
+    color: #98c379;
+}
+
+.token.function,
+.token.class-name {
+    color: #61afef;
+}
+
+/* 链接在代码中的颜色 */
+pre a {
+    color: #ffd7e0;
+    text-decoration: underline;
+}
+
+/* 兼容浅色主题：如果页面使用 light 模式，调整为浅色背景并保留粉色高亮 */
+html.theme-light pre[class*="language-"] {
+    background: #fffafc !important;
+    color: #2b3440 !important;
+    border: 1px solid rgba(255, 183, 197, 0.25);
+}
+
+/* 小屏幕：减少内边距以节省空间 */
+@media (max-width: 640px) {
+    pre[class*="language-"] {
+        padding: 0.6rem;
+        font-size: 0.95rem;
+    }
+}
+
 /* custom.css — Butterfly 主题代码高亮与“终端”样式覆盖 */
 /* 全局代码块背景与前景色（可按需调整） */
 pre[class*="language-"],
@@ -37,7 +179,7 @@ code[class*="language-"] {
 }
 
 .language-bash .token.keyword {
-    color: #c678dd;
+    color: #FFB7C5;
 }
 
 .language-bash .token.operator,
@@ -48,14 +190,14 @@ code[class*="language-"] {
 /* 使代码块复制按钮与主题色协调（Butterfly 用的类名可能不同，按需调整） */
 .copy-code-button,
 .butterfly-copy-button {
-    background: #00c4b6;
+    background: #FFB7C5;
     color: #fff !important;
     border: none;
 }
 
 .copy-code-button:hover,
 .butterfly-copy-button:hover {
-    background: #00a895;
+    background: #ff9fb9;
 }
 
 /* Prism 通用 token 调整（可扩展） */
@@ -67,7 +209,7 @@ code[class*="language-"] {
 }
 
 .token.keyword {
-    color: #c678dd;
+    color: #FFB7C5;
 }
 
 .token.boolean,
@@ -89,7 +231,7 @@ code[class*="language-"] {
 
 /* 让链接颜色与主题协调 */
 pre a {
-    color: #ffd7e0;
+    color: #FFB7C5;
     text-decoration: underline;
 }
 
@@ -99,4 +241,4 @@ html.theme-light pre[class*="language-"] {
     color: #2b3440 !important;
 }
 
-/* 额外：如果你想用 CDN 的 Prism 主题，记得把它放在 inject.head 并确保本文件在其后加载以覆盖样式 */
+/* （可选）如果你想用 CDN 的 Prism 主题，记得把它放在 inject.head 并确保本文件在其后加载以覆盖样式 */
