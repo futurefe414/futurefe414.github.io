@@ -1,317 +1,19 @@
-/* custom.css — Butterfly 主题（基于 #FFB7C5 粉色）
-    说明：此文件覆盖代码块、bash/终端样式、复制按钮等，使高亮与主题主色协调。
+/* custom.css — concise overrides for Butterfly theme colors
+   - 仅修改配色与行内代码/引用的可见性，不改页面布局
+   - 主色：#FFB7C5（粉）
 */
+
 :root {
     --butterfly-accent: #FFB7C5;
-    /* 主题主色 */
-    --code-bg-dark: #0b1220;
-    /* 深色代码背景 */
-    --code-fg: #f6f0f2;
-    /* 代码前景（深色模式） */
-    --muted: #7e8a90;
-    /* 注释等次级颜色 */
-    --copy-btn-bg: var(--butterfly-accent);
-}
-
-/* 通用代码块样式 */
-pre[class*="language-"],
-code[class*="language-"] {
-    background: var(--code-bg-dark) !important;
-    color: var(--code-fg) !important;
-    border-radius: 8px;
-    padding: 1rem;
-    font-family: Consolas, 'Liberation Mono', Menlo, monospace;
-    line-height: 1.6;
-    overflow: auto;
-}
-
-/* 代码选择颜色（配合主题色） */
-.pre[class*="language-"] ::selection,
-pre[class*="language-"]::selection,
-code[class*="language-"] ::selection,
-code[class*="language-"]::selection {
-    background: rgba(255, 183, 197, 0.25);
-    color: inherit;
-}
-
-/* 行号（如果启用了 line-numbers 插件） */
-.line-numbers .line-numbers-rows {
-    background: transparent;
-    color: rgba(255, 255, 255, 0.18);
-}
-
-/* 终端 / bash 风格 */
-.language-bash,
-.language-shell,
-.language-console {
-    background: linear-gradient(180deg, #07101a 0%, var(--code-bg-dark) 100%) !important;
-    color: var(--code-fg) !important;
-}
-
-.language-bash .token.prompt {
-    color: var(--butterfly-accent);
-    font-weight: 700;
-}
-
-.language-bash .token.comment {
-    color: var(--muted);
-    font-style: italic;
-}
-
-.language-bash .token.string {
-    color: #98c379;
-}
-
-.language-bash .token.function {
-    color: #61afef;
-}
-
-.language-bash .token.keyword {
-    color: var(--butterfly-accent);
-}
-
-.language-bash .token.operator,
-.language-bash .token.punctuation {
-    color: #d19a66;
-}
-
-/* 复制按钮与工具条 */
-.copy-code-button,
-.butterfly-copy-button {
-    background: var(--copy-btn-bg);
-    color: #fff !important;
-    border: none;
-    border-radius: 4px;
-    padding: 0.25rem 0.5rem;
-}
-
-.copy-code-button:hover,
-.butterfly-copy-button:hover {
-    background: #ff9fb9;
-}
-
-/* Prism token 通用覆盖（可按需扩展） */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-    color: var(--muted);
-}
-
-.token.keyword {
-    color: var(--butterfly-accent);
-}
-
-.token.boolean,
-.token.number {
-    color: #d19a66;
-}
-
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char {
-    color: #98c379;
-}
-
-.token.function,
-.token.class-name {
-    color: #61afef;
-}
-
-/* 链接在代码中的颜色 */
-pre a {
-    color: #ffd7e0;
-    text-decoration: underline;
-}
-
-/* 兼容浅色主题：如果页面使用 light 模式，调整为浅色背景并保留粉色高亮 */
-html.theme-light pre[class*="language-"] {
-    background: #fffafc !important;
-    color: #2b3440 !important;
-    border: 1px solid rgba(255, 183, 197, 0.25);
-}
-
-/* 小屏幕：减少内边距以节省空间 */
-@media (max-width: 640px) {
-    pre[class*="language-"] {
-        padding: 0.6rem;
-        font-size: 0.95rem;
-    }
-}
-
-/* custom.css — Butterfly 主题代码高亮与“终端”样式覆盖 */
-/* 全局代码块背景与前景色（可按需调整） */
-pre[class*="language-"],
-code[class*="language-"] {
-    background: #0f1724 !important;
-    color: #d1e7ff !important;
-    border-radius: 6px;
-    padding: 1rem;
-    font-family: Consolas, 'Liberation Mono', Menlo, monospace;
-}
-
-/* 行号样式（如果启用行号） */
-.line-numbers .line-numbers-rows {
-    background: transparent;
-    color: rgba(255, 255, 255, 0.22);
-}
-
-/* 终端 / bash 风格高亮：命令、参数、注释等 */
-.language-bash,
-.language-shell,
-.language-console {
-    background: #0b1220 !important;
-    color: #cde4ff !important;
-}
-
-.language-bash .token.comment {
-    color: #7e8a90;
-    font-style: italic;
-}
-
-.language-bash .token.string {
-    color: #98c379;
-}
-
-.language-bash .token.function {
-    color: #61afef;
-}
-
-.language-bash .token.keyword {
-    color: #FFB7C5;
-}
-
-.language-bash .token.operator,
-.language-bash .token.punctuation {
-    color: #d19a66;
-}
-
-/* 使代码块复制按钮与主题色协调（Butterfly 用的类名可能不同，按需调整） */
-.copy-code-button,
-.butterfly-copy-button {
-    background: #FFB7C5;
-    color: #fff !important;
-    border: none;
-}
-
-.copy-code-button:hover,
-.butterfly-copy-button:hover {
-    background: #ff9fb9;
-}
-
-/* Prism 通用 token 调整（可扩展） */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-    color: #7e8a90;
-}
-
-.token.keyword {
-    color: #FFB7C5;
-}
-
-.token.boolean,
-.token.number {
-    color: #d19a66;
-}
-
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char {
-    color: #98c379;
-}
-
-.token.function,
-.token.class-name {
-    color: #61afef;
-}
-
-/* 让链接颜色与主题协调 */
-pre a {
-    color: #FFB7C5;
-    text-decoration: underline;
-}
-
-/* 针对浅色主题做个容错（如果你同时使用 light mode） */
-html.theme-light pre[class*="language-"] {
-    background: #f6f8fa !important;
-    color: #2b3440 !important;
-}
-
-/* （可选）如果你想用 CDN 的 Prism 主题，记得把它放在 inject.head 并确保本文件在其后加载以覆盖样式 */
-/* (已移动并统一到下方的强覆盖区：全局 16px 设置与 blockquote 覆盖) */
-
-
-/* Highlight.js / theme-specific overrides: increase specificity so theme's default rules don't win */
-.container figure.highlight pre .keyword,
-figure.highlight pre .keyword,
-.container figure.highlight pre .title,
-figure.highlight pre .title,
-.container figure.highlight pre .tag,
-figure.highlight pre .tag,
-.container figure.highlight pre .function,
-figure.highlight pre .function,
-.container figure.highlight pre .string,
-figure.highlight pre .string {
-    color: #FFB7C5 !important;
-}
-
-/* Override inline code color set by theme */
-.container code {
-    color: #FFB7C5 !important;
-}
-
-/* Also ensure code links use pink */
-.container figure.highlight pre a,
-figure.highlight pre a {
-    color: #FFB7C5 !important;
-}
-
-/* Strong overrides: ensure blockquote text is visible and set global font to 16px */
-:root {
     --global-font-size: 16px;
 }
 
+/* 全局字体尺寸（只改大小，不改布局） */
 body {
     font-size: 16px !important;
 }
 
-/* High-specificity selectors to override theme and highlight styles inside blockquotes */
-html body blockquote,
-html body .container blockquote,
-html body .post blockquote,
-html body .article blockquote,
-html body .container figure.highlight blockquote,
-html body blockquote p,
-html body .container blockquote p,
-html body blockquote * {
-    color: #D65A75 !important;
-    background: transparent !important;
-    border-left: 4px solid rgba(214, 90, 117, 0.28) !important;
-    font-weight: 500 !important;
-    font-size: 1rem !important;
-}
-
-/* Make sure code/pre inside blockquote are not styled with theme's code background */
-html body blockquote code,
-html body blockquote pre,
-html body .container blockquote code,
-html body .container blockquote pre {
-    background: transparent !important;
-    color: #D65A75 !important;
-    padding: 0 !important;
-}
-
-html body blockquote a,
-html body .container blockquote a {
-    color: #D65A75 !important;
-    text-decoration: underline !important;
-}
-
-/* Inline code (非 language-* 的行内代码)：去掉背景色，仅修改文字颜色 */
+/* 行内代码：移除背景/边框，仅改文字颜色为主粉 */
 .container code:not([class*="language-"]):not(.hljs),
 .post code:not([class*="language-"]):not(.hljs),
 article code:not([class*="language-"]):not(.hljs),
@@ -320,6 +22,49 @@ li code:not([class*="language-"]):not(.hljs) {
     background: transparent !important;
     padding: 0 !important;
     border: none !important;
-    color: #FFB7C5 !important;
-    /* inline code use main pink */
+    color: var(--butterfly-accent) !important;
+}
+
+/* 引用（blockquote）：仅改文字颜色与左侧线提示，背景透明 */
+html body blockquote,
+html body .container blockquote,
+html body .post blockquote {
+    color: #D65A75 !important;
+    /* 深一点的粉色，保证可读性 */
+    background: transparent !important;
+    border-left: 4px solid rgba(214, 90, 117, 0.18) !important;
+}
+
+/* 引用内的代码或链接也保持与引用文字一致 */
+html body blockquote code,
+html body blockquote pre,
+html body blockquote a {
+    background: transparent !important;
+    color: #D65A75 !important;
+    padding: 0 !important;
+}
+
+/* 高亮/Prism / highlight.js token：把关键关键字设为主粉色 */
+.container figure.highlight pre .keyword,
+.container figure.highlight pre .token.keyword,
+.hljs .keyword,
+.hljs .built_in,
+.token.keyword {
+    color: var(--butterfly-accent) !important;
+}
+
+/* 终端命令中的关键字提示 */
+.language-bash .token.keyword,
+.language-shell .token.keyword {
+    color: var(--butterfly-accent) !important;
+}
+
+/* 复制按钮与工具条颜色与主题一致（保守改动） */
+.copy-code-button,
+.butterfly-copy-button {
+    background: var(--butterfly-accent) !important;
+    color: #fff !important;
+}
+
+/* 保持其它样式由主题处理，避免影响布局 */
 }
