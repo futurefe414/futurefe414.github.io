@@ -242,3 +242,84 @@ html.theme-light pre[class*="language-"] {
 }
 
 /* （可选）如果你想用 CDN 的 Prism 主题，记得把它放在 inject.head 并确保本文件在其后加载以覆盖样式 */
+/* (已移动并统一到下方的强覆盖区：全局 16px 设置与 blockquote 覆盖) */
+
+
+/* Highlight.js / theme-specific overrides: increase specificity so theme's default rules don't win */
+.container figure.highlight pre .keyword,
+figure.highlight pre .keyword,
+.container figure.highlight pre .title,
+figure.highlight pre .title,
+.container figure.highlight pre .tag,
+figure.highlight pre .tag,
+.container figure.highlight pre .function,
+figure.highlight pre .function,
+.container figure.highlight pre .string,
+figure.highlight pre .string {
+    color: #FFB7C5 !important;
+}
+
+/* Override inline code color set by theme */
+.container code {
+    color: #FFB7C5 !important;
+}
+
+/* Also ensure code links use pink */
+.container figure.highlight pre a,
+figure.highlight pre a {
+    color: #FFB7C5 !important;
+}
+
+/* Strong overrides: ensure blockquote text is visible and set global font to 16px */
+:root {
+    --global-font-size: 16px;
+}
+
+body {
+    font-size: 16px !important;
+}
+
+/* High-specificity selectors to override theme and highlight styles inside blockquotes */
+html body blockquote,
+html body .container blockquote,
+html body .post blockquote,
+html body .article blockquote,
+html body .container figure.highlight blockquote,
+html body blockquote p,
+html body .container blockquote p,
+html body blockquote * {
+    color: #D65A75 !important;
+    background: transparent !important;
+    border-left: 4px solid rgba(214, 90, 117, 0.28) !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+}
+
+/* Make sure code/pre inside blockquote are not styled with theme's code background */
+html body blockquote code,
+html body blockquote pre,
+html body .container blockquote code,
+html body .container blockquote pre {
+    background: transparent !important;
+    color: #D65A75 !important;
+    padding: 0 !important;
+}
+
+html body blockquote a,
+html body .container blockquote a {
+    color: #D65A75 !important;
+    text-decoration: underline !important;
+}
+
+/* Inline code (非 language-* 的行内代码)：去掉背景色，仅修改文字颜色 */
+.container code:not([class*="language-"]):not(.hljs),
+.post code:not([class*="language-"]):not(.hljs),
+article code:not([class*="language-"]):not(.hljs),
+p code:not([class*="language-"]):not(.hljs),
+li code:not([class*="language-"]):not(.hljs) {
+    background: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    color: #FFB7C5 !important;
+    /* inline code use main pink */
+}
