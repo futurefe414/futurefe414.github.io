@@ -67,3 +67,10 @@ html body blockquote a {
 }
 
 /* 保持其它样式由主题处理，避免影响布局 */
+
+/* 强制中文优先字体（提高优先级，确保生效） */
+body {
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "微软雅黑", Arial, sans-serif !important;
+}
+
+/* 不对侧边栏位置做强制调整：保持主题默认/配置控制 */
